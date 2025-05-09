@@ -1,0 +1,29 @@
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, sans-serif;
+  background: #f9fafb;
+}
+
+h1, h2 {
+  font-weight: 700;
+  color: #111827;
+}
+
+p {
+  color: #6b7280;
+}
+/* index.css */
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #f9fafb;
+  font-family: 'Inter', system-ui, sans-serif;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+}
+
