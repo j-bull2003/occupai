@@ -1,66 +1,46 @@
-import React from "react";
+// PanelChart.jsx
+import React from 'react';
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
-  BarChart,
-  Bar
-} from "recharts";
-import Papa from "papaparse";
-
-const parseCSVData = (csv, columns) => {
-  const result = Papa.parse(csv.trim(), {
-    header: true,
-    skipEmptyLines: true,
-  });
-
-  return result.data.map((row) => {
-    const newRow = {};
-    columns.forEach((col) => {
-      newRow[col.selector] =
-        col.type === "number"
-          ? parseFloat(row[col.selector])
-          : row[col.selector];
-    });
-    return newRow;
-  });
-};
+} from 'recharts';
 
 const PanelChart = ({ panel }) => {
-  const target = panel.targets.find((t) => t.data);
-  if (!target) return <p className="text-gray-400">No data available</p>;
+  const data = panel.data || [];
 
-  const columns = target.columns;
-  const data = parseCSVData(target.data, columns);
-
-  const chartType = panel.type;
-  const valueKey = columns.find((col) => col.type === "number")?.selector;
-  const timeKey = columns.find((col) => col.type === "timestamp")?.selector;
+  if (!data.length) {
+    return <p className="text-gray-500 text-sm">No data available for chart.</p>;
+  }
 
   return (
-    <ResponsiveContainer width="100%" height={250}>
-      {chartType === "timeseries" ? (
-        <LineChart data={data}>
-          <XAxis dataKey={timeKey} tick={{ fontSize: 10 }} />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey={valueKey} stroke="#3b82f6" strokeWidth={2} dot={false} />
-        </LineChart>
-      ) : chartType === "bargauge" || chartType === "gauge" ? (
-        <BarChart data={data}>
-          <XAxis dataKey={timeKey} tick={{ fontSize: 10 }} />
-          <YAxis />
-          <Tooltip />
-          <Bar dataKey={valueKey} fill="#10b981" />
-        </BarChart>
-      ) : (
-        <p className="text-gray-400">Unsupported chart type</p>
-      )}
+    <ResponsiveContainer width="100%" height={300}>
+      <LineChart data={data}>
+        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+        <XAxis dataKey="time" />
+        <YAxis />
+        <Tooltip />
+        {data.some(d => 'people_count' in d) && (
+          <Line
+            type="monotone"
+            dataKey="people_count"
+            stroke="#8884d8"
+            name="People Count"
+          />
+        )}
+        {data.some(d => 'group_count' in d) && (
+          <Line
+            type="monotone"
+            dataKey="group_count"
+            stroke="#82ca9d"
+            name="Group Count"
+          />
+        )}
+      </LineChart>
     </ResponsiveContainer>
   );
 };
