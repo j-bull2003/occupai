@@ -30,7 +30,6 @@ export async function fetchInfluxData() {
         groupedData.get(time)[o._field] = o._value;
       },
       error(error) {
-        console.error('Influx query error:', error);
         reject(error);
       },
       complete() {
@@ -39,3 +38,5 @@ export async function fetchInfluxData() {
     });
   });
 }
+
+module.exports = { fetchInfluxData };
